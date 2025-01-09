@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TradingService, Symbol } from '../services/trading.service';
 
 @Component({
   selector: 'app-market-watch',
@@ -13,7 +14,8 @@ import { CommonModule } from '@angular/common';
       
       <div class="flex-1 overflow-y-auto">
         <div *ngFor="let symbol of symbols" 
-             class="px-4 py-2 border-b border-trading-border hover:bg-opacity-50 hover:bg-trading-border cursor-pointer">
+             class="px-4 py-2 border-b border-trading-border hover:bg-opacity-50 hover:bg-trading-border cursor-pointer"
+             (click)="selectSymbol(symbol)">
           <div class="flex justify-between items-center">
             <span class="font-medium">{{symbol.name}}</span>
             <span>{{symbol.price}}</span>
@@ -30,7 +32,7 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class MarketWatchComponent {
-  symbols = [
+  symbols: Symbol[] = [
     { name: 'EUR/USD', price: '1.2345', change: 0.19, spread: '0.2' },
     { name: 'GBP/USD', price: '1.3456', change: -0.25, spread: '0.3' },
     { name: 'USD/JPY', price: '110.45', change: 0.32, spread: '0.1' },
@@ -40,4 +42,10 @@ export class MarketWatchComponent {
     { name: 'EUR/GBP', price: '0.8678', change: -0.12, spread: '0.3' },
     { name: 'AUD/USD', price: '0.7456', change: 0.28, spread: '0.2' },
   ];
+
+  constructor(private tradingService: TradingService) {}
+
+  selectSymbol(symbol: Symbol) {
+    this.tradingService.setSelectedSymbol(symbol);
+  }
 }

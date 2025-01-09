@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TradingService, Symbol } from '../services/trading.service';
 
 @Component({
   selector: 'app-chart',
@@ -9,9 +10,11 @@ import { CommonModule } from '@angular/common';
     <div class="h-full bg-trading-dark flex flex-col">
       <div class="border-b border-trading-border p-4 flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <span class="text-xl font-bold">EUR/USD</span>
-          <span class="text-lg">1.2345</span>
-          <span class="text-trading-green">+0.0023 (+0.19%)</span>
+          <span class="text-xl font-bold">{{selectedSymbol?.name}}</span>
+          <span class="text-lg">{{selectedSymbol?.price}}</span>
+          <span [class]="selectedSymbol?.change && selectedSymbol.change >= 0 ? 'text-trading-green' : 'text-trading-red'">
+            {{selectedSymbol?.change}}%
+          </span>
         </div>
         
         <div class="flex gap-2">
@@ -25,12 +28,21 @@ import { CommonModule } from '@angular/common';
       </div>
       
       <div class="flex-1 flex items-center justify-center text-gray-500">
-        Chart Area - Will integrate real charting library later
+        Chart Area - {{selectedSymbol?.name}} - Will integrate real charting library later
       </div>
     </div>
   `
 })
-export class ChartComponent {
+export class ChartComponent implements OnInit {
   periods = ['1H', '4H', '1D', '1W', '1M'];
   activePeriod = '1D';
+  selectedSymbol?: Symbol;
+
+  constructor(private tradingService: TradingService) {}
+
+  ngOnInit() {
+    this.tradingService.selectedSymbol$.subscribe(symbol => {
+      this.selectedSymbol = symbol;
+    });
+  }
 }
