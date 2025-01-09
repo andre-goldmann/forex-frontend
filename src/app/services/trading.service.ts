@@ -1,27 +1,18 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
-export interface Symbol {
-  name: string;
-  price: string;
-  change: number;
-  spread: string;
-}
+import { Injectable, signal } from '@angular/core';
+import { Symbol } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradingService {
-  private selectedSymbolSubject = new BehaviorSubject<Symbol>({
+  selectedSymbolSignal = signal<Symbol>({
     name: 'EUR/USD',
     price: '1.2345',
     change: 0.19,
     spread: '0.2'
   });
 
-  selectedSymbol$ = this.selectedSymbolSubject.asObservable();
-
   setSelectedSymbol(symbol: Symbol) {
-    this.selectedSymbolSubject.next(symbol);
+    this.selectedSymbolSignal.set(symbol);
   }
 }

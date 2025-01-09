@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TradingService, Symbol } from '../services/trading.service';
+import { TradingService } from '../services/trading.service';
+import { Symbol } from '../models';
 
 @Component({
   selector: 'app-chart',
@@ -8,17 +9,17 @@ import { TradingService, Symbol } from '../services/trading.service';
   imports: [CommonModule],
   template: `
     <div class="h-full bg-trading-dark flex flex-col">
-      <div class="border-b border-trading-border p-4 flex justify-between items-center">
+      <div class="border-b border-trading-border p-4 flex flex-col md:flex-row justify-between items-center">
         <div class="flex items-center gap-4">
-          <span class="text-xl font-bold">{{selectedSymbol?.name}}</span>
-          <span class="text-lg">{{selectedSymbol?.price}}</span>
-          <span [class]="selectedSymbol?.change && selectedSymbol.change >= 0 ? 'text-trading-green' : 'text-trading-red'">
-            {{selectedSymbol?.change}}%
+          <span class="text-xl font-bold">{{tradingService.selectedSymbolSignal().name}}</span>
+          <span class="text-lg">{{tradingService.selectedSymbolSignal().price}}</span>
+          <span [class]="tradingService.selectedSymbolSignal().change && tradingService.selectedSymbolSignal().change >= 0 ? 'text-trading-green' : 'text-trading-red'">
+            {{tradingService.selectedSymbolSignal().change}}%
           </span>
         </div>
-        
-        <div class="flex gap-2">
-          <button *ngFor="let period of periods" 
+
+        <div class="flex gap-2 mt-4 md:mt-0">
+          <button *ngFor="let period of periods"
                   [class.bg-trading-panel]="activePeriod === period"
                   class="px-3 py-1 rounded hover:bg-trading-panel transition-colors"
                   (click)="activePeriod = period">
@@ -26,23 +27,20 @@ import { TradingService, Symbol } from '../services/trading.service';
           </button>
         </div>
       </div>
-      
+
       <div class="flex-1 flex items-center justify-center text-gray-500">
-        Chart Area - {{selectedSymbol?.name}} - Will integrate real charting library later
+        Chart Area - {{tradingService.selectedSymbolSignal().name}} - Will integrate real charting library later
       </div>
     </div>
   `
 })
 export class ChartComponent implements OnInit {
-  periods = ['1H', '4H', '1D', '1W', '1M'];
+  periods = ['15M', '30M', '1H', '4H', '1D', '1W', '1M'];
   activePeriod = '1D';
-  selectedSymbol?: Symbol;
 
-  constructor(private tradingService: TradingService) {}
+  constructor(public tradingService: TradingService) {}
 
   ngOnInit() {
-    this.tradingService.selectedSymbol$.subscribe(symbol => {
-      this.selectedSymbol = symbol;
-    });
+
   }
 }

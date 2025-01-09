@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TradingService, Symbol } from '../services/trading.service';
+import { TradingService } from '../services/trading.service';
+import { Symbol } from '../models';
 
 @Component({
   selector: 'app-market-watch',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="w-64 bg-trading-panel h-full flex flex-col">
+    <div class="w-full md:w-64 bg-trading-panel h-full flex flex-col">
       <div class="p-4 border-b border-trading-border">
         <h3 class="text-lg font-semibold">Market Watch</h3>
       </div>
-      
+
       <div class="flex-1 overflow-y-auto">
-        <div *ngFor="let symbol of symbols" 
+        <div *ngFor="let symbol of symbols"
              class="px-4 py-2 border-b border-trading-border hover:bg-opacity-50 hover:bg-trading-border cursor-pointer"
              (click)="selectSymbol(symbol)">
           <div class="flex justify-between items-center">
@@ -41,6 +42,7 @@ export class MarketWatchComponent {
     { name: 'XAU/USD', price: '1890.5', change: 0.45, spread: '0.4' },
     { name: 'EUR/GBP', price: '0.8678', change: -0.12, spread: '0.3' },
     { name: 'AUD/USD', price: '0.7456', change: 0.28, spread: '0.2' },
+    { name: 'NZD/USD', price: '0.6854', change: 0.15, spread: '0.3' },
   ];
 
   constructor(private tradingService: TradingService) {}
